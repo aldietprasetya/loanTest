@@ -1,0 +1,14 @@
+.c-settings {
+  &__title {
+    @apply text-2xl;
+  }
+}
+
+input:checked ~ .dot {
+  @apply bg-primary-black;
+  transform: translateX(100%);
+}
+
+input:checked ~ .dotbg {
+  @apply bg-primary-white border-primary-black border;
+}

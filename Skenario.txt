@@ -1,0 +1,24 @@
+Pinjamanan Online CrimsonBank
+
+Page Home >>> 
+1. terdapat card yang berisi limit pinjaman user A 
+limit berdasarkan pengurangan dari dana yang user A pinjam dan total dana yang di pinjamkan oleh CrimsonBank
+
+Pembayaran cicilan bisa dilakukan 1 bulan, 3 bulan, dan maksimal 6 bulan.
+CrimsonBank akan mengenakan biaya bunga sebesar 2% dari nilai pembayaran per bulan dan fee sebesar 1.5%.
+Untuk pembayaran cicilan 1 bulan dikenakan bunga 0%.
+
+
+2. terdapat table list recent transaction
+di recent transaction menampilkan list transaksi terakhir, dan status apakah sudah dibayar apa belum
+
+3. terdapat table list loan funds (tekan list untuk membayar)
+untuk di tab list loan funds hanya menampilkan list yang belum dibayarkan dan apa
+
+
+
+
+
+
+
+inspirasi https://dribbble.com/shots/15627740-Online-Digital-Loan-Exploration

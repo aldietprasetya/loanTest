@@ -1,0 +1,55 @@
+.sidebar {
+	@apply fixed flex flex-col bg-primary-white p-4 overflow-hidden;
+	width: calc(100vw - 80%);
+	height: calc(100vh - 40px);
+
+	&__bound {
+		@apply flex-1 border-b border-primary-grey;
+	}
+
+	&__menu-title, .button .text {
+		@extend %transition;
+	}
+
+	&__menu {
+		margin: 0 -1rem;
+		padding-top: 15%;
+
+		&_no-padd {
+			padding-top: 0px;
+		}
+
+		&-logo {
+			@apply pt-10 pb-2;
+			width: 100px;
+		}
+
+		&-button {
+			@apply flex items-center px-5 py-2 h-14;
+			text-decoration: none;
+			@extend %transition;
+
+			&:hover {
+				@apply bg-primary-grey3;
+			}
+
+			&.router-link-exact-active {
+				@apply border-l-4 border-primary-black;
+
+				.sidebar__menu-icon, .sidebar__menu-text {
+					@apply text-primary-black;
+				}
+			}
+		}
+
+		&-text {
+			@apply text-primary-black pl-4 font-semibold text-lg;
+			@extend %transition;
+		}
+
+		&-icon {
+			@apply text-primary-black;
+			@extend %transition;
+		}
+	}
+}

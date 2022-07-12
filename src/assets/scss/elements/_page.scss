@@ -1,0 +1,36 @@
+// GENERAL
+button {
+	cursor: pointer;
+	appearance: none;
+	border: none;
+	outline: none;
+	background: none;
+}
+
+.app {
+	@apply w-full relative min-h-screen p-5;
+}
+
+p {
+	color: var(--primary-font);
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+}
+
+::-webkit-scrollbar-track {
+	border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #D5D5D5;
+	border: 2px solid transparent;
+	border-left: 2px solid transparent;
+	background-clip: content-box;
+}
+
+.o-page-wrapper{
+  @apply min-h-screen relative ml-auto p-4;
+	width: calc(100% - 23%);
+}

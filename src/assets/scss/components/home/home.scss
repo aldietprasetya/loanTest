@@ -1,0 +1,136 @@
+.c-home {
+  &__wrapper {
+    &-detail {
+      @apply flex w-full;
+    }
+    &-loan {
+      @apply flex mt-10 mb-10 items-center;
+    }
+  }
+
+  &__profile {
+    &-detail {
+      @apply flex items-center ml-auto;
+    }
+    &-img {
+      @apply ml-6 rounded-full;
+      width: 50px;
+    }
+    &-more {
+      @apply cursor-pointer;
+    }
+    &-funds {
+      @apply flex mr-12;
+    }
+  }
+
+  &__funds {
+    &-logo {
+      @apply bg-primary-white rounded-full flex justify-center items-center mr-4;
+      width: 40px;
+      height: 40px;
+    }
+    &-total {
+      @apply text-2xl font-semibold;
+    }
+    &-title {
+      @apply text-xs;
+    }
+  }
+
+  &__loan {
+    @apply w-1/2 bg-primary-black p-6;
+    &_title {
+      @apply text-2xl text-primary-white;
+    }
+    &-label {
+      @apply text-primary-white text-base;
+    }
+    &-monthly {
+      @apply flex;
+      span {
+        @apply text-primary-white border border-primary-white p-2 cursor-pointer;
+        border-top: 0;
+        &:first-of-type {
+          border-right: 0;
+        }
+        &:last-of-type {
+          border-left: 0;
+        }
+        &.active {
+          @apply text-primary-black bg-primary-white;
+        }
+      }
+    }
+    &-input {
+      background: none;
+      height: 60px;
+      @apply border-b-2 border-primary-white text-primary-white px-4 text-xl;
+      &:focus-visible {
+        outline: none;
+      }
+    }
+    &-header {
+      @apply flex items-center pb-6 pt-2 border-b border-primary-grey3;
+    }
+    &-transaction {
+      @apply flex flex-col pb-6 pt-3 border-b border-primary-grey3;
+    }
+    &-transaction {
+      @apply flex flex-col pb-6 pt-3;
+    }
+    &-button {
+      @extend %transition;
+      @apply relative flex justify-center items-center text-primary-white border-t cursor-pointer;
+      left: -24px;
+      margin-bottom: -24px;
+      width: calc(100% + 48px);
+      height: 60px;
+      &:hover {
+        @apply bg-primary-white text-primary-black border-2 border-primary-black;
+      }
+    }
+  }
+
+  &__transaction {
+    @apply mb-6;
+    &:last-of-type {
+      @apply mb-0;
+    }
+    &_title {
+      @apply text-2xl;
+    }
+    &-table {
+      @apply mt-6;
+      height: 240px;
+      min-height: 240px;
+      overflow: overlay;
+      &_list {
+        @apply flex items-center pl-2;
+        height: 80px;
+      }
+      &_icon {
+        @apply bg-primary-black rounded-full flex justify-center items-center mr-6;
+        width: 40px;
+        height: 40px;
+        span {
+          @apply text-primary-white;
+        }
+      }
+      &_detil {
+        @apply flex flex-col;
+        span {
+          white-space: nowrap;
+          width: 230px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+      &_total {
+        @apply ml-auto font-semibold text-sm pr-3;
+      }
+    }
+  }
+
+
+}
