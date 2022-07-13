@@ -12,6 +12,7 @@ const vuexLocal = new VuexPersistence({
 const store = new Vuex.Store({
   state: {
     funds:4000000,
+    fundsLimitBanks:4000000,
     borrowedFunds:0,
     transactionList:[],
     loanList:[]
@@ -19,6 +20,9 @@ const store = new Vuex.Store({
   getters: {
     getFunds: state => {
       return state.funds
+    },
+    getFundsLimitBanks: state => {
+      return state.fundsLimitBanks
     },
     getBorrowedFunds: state => {
       return state.borrowedFunds

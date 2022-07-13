@@ -61,7 +61,8 @@ export default {
       return this.$store.getters.getFunds
     },
     borrowedFunds() {
-      return this.$store.getters.getBorrowedFunds
+      let borrowStore = this.$store.getters.getBorrowedFunds
+      return borrowStore < 0 ? 0 : borrowStore
     },
   },
   watch: {

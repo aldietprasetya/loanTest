@@ -8,7 +8,7 @@
       <div class="c-home__transaction-table_list" v-if="loanList.length < 1">
         ~ There is no Loan!
       </div>
-      <div class="c-home__transaction-table_list hover:bg-primary-grey3 cursor-pointer" v-for="(item, i) in loanList" :key="i">
+      <div class="c-home__transaction-table_list hover:bg-primary-grey3 cursor-pointer" v-for="(item, i) in loanList" :key="i" @click="getLoanItem(item)">
 
         <div class="c-home__transaction-table_icon">
           <span class="material-icons">credit_score</span>
@@ -44,7 +44,21 @@ export default {
   },
   computed: {
     loanList() {
-      return this.$store.getters.getLoanList
+      let getLoanList = this.$store.getters.getLoanList
+      let loanListData = []
+      getLoanList.forEach((item) => {
+        if (item.status == "unpaid") {
+          loanListData.push(item)
+        }
+      });
+
+      loanListData.sort((a,b) => {
+        const date1 = new Date(a.dueDate)
+        const date2 = new Date(b.dueDate)
+        return date1 - date2;
+      })
+
+      return loanListData
     }
   },
   watch: {
@@ -54,6 +68,9 @@ export default {
 
   },
   methods: {
+    getLoanItem(dt) {
+      this.$emit('loanItem', dt)
+    },
     formatter(number) {
       return new Intl.NumberFormat('en-US', {
         style: 'currency',

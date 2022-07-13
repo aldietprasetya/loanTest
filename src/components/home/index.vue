@@ -8,15 +8,16 @@
       <div class="c-home__loan">
 
         <div class="c-home__loan-header">
-          <p class="c-home__loan_title">Loan Set</p>
+          <p class="c-home__loan_title">{{payLoan ? 'Pay Loan' : 'Loan Set'}}</p>
+          <span class="material-icons text-primary-white ml-auto cursor-pointer" v-if="payLoan" @click="cancelPayLoan">close</span>
         </div>
 
-        <div class="c-home__loan-transaction p-4">
+        <div class="c-home__loan-transaction p-4" v-if="!payLoan">
           <div class="flex flex-col mt-4">
             <label class="c-home__loan-label" for="funds">
               Loan Amount
             </label>
-            <input class="c-home__loan-input" v-model="amountLoan" pattern="^(?=.?\d)\d{0,14}(\.?\d{0,6})?$" id="funds" type="text" placeholder="$ ... ...">
+            <input class="c-home__loan-input" v-model="amountLoan" @keypress="isNumber($event)" type="text" placeholder="$ ... ...">
           </div>
           <div class="flex justify-between items-center">
             <label class="c-home__loan-label" for="funds">
@@ -32,7 +33,7 @@
             <label class="c-home__loan-label" for="funds">
               Loan About
             </label>
-            <input class="c-home__loan-input" v-model="aboutLoan" id="funds" type="text" placeholder="... ... ...">
+            <input class="c-home__loan-input" v-model="aboutLoan" type="text" placeholder="... ... ...">
           </div>
           <div class="flex justify-between mt-5">
             <div class="w-1/2 flex flex-col">
@@ -48,10 +49,9 @@
               <p class="text-primary-white text-2xl">{{totalInterest == 0 ? '-' : formatter(totalInterest)}}</p>
             </div>
           </div>
-
         </div>
 
-        <div class="c-home__loan-detil p-4">
+        <div class="c-home__loan-detil p-4" v-if="!payLoan">
           <div class="flex justify-between">
 
             <div class="w-1/2 flex flex-col">
@@ -69,13 +69,43 @@
           </div>
         </div>
 
+        <div class="c-home__loan-detil p-4" v-if="payLoan">
+          <div class="flex flex-col mt-4">
+            <label class="c-home__loan-label" for="funds">
+              Loan About
+            </label>
+            <p class="text-primary-white text-2xl">~ {{payLoanData == null ? '-' : payLoanData.title}}</p>
+          </div>
+          <div class="flex justify-between mt-4">
+
+            <div class="w-1/2 flex flex-col">
+              <label class="c-home__loan-label" for="funds">
+                Loan Amount to Pay
+              </label>
+              <p class="text-primary-white text-2xl">{{payLoanData == null ? '-' : formatter(payLoanData.total)}}</p>
+            </div>
+            <div class="w-1/2 flex flex-col">
+              <label class="c-home__loan-label" for="funds">
+                Loan Pay Date
+              </label>
+              <p class="text-primary-white text-2xl">{{ payLoanData == null ? 0 : payLoanData.dueDate | moment('DD MMM YY, HH:mm') }}</p>
+            </div>
+          </div>
+          <div class="flex flex-col mt-4">
+            <label class="c-home__loan-label" for="funds">
+              Loan Status
+            </label>
+            <p class="text-primary-white text-2xl">~ {{payLoanData == null ? '-' : payLoanData.status}}</p>
+          </div>
+        </div>
+
         <div class="c-home__loan-button" @click="proceed()">
-          - Proceed -
+          {{payLoan ? '- Proceed Pay Loan -' : '- Proceed -'}}
         </div>
       </div>
 
       <div class="w-1/2 p-10">
-        <loanTable ref='loanTable'/>
+        <loanTable @loanItem="getLoanItem" ref='loanTable'/>
         <transactionTable ref='transactionTable'/>
       </div>
 
@@ -108,6 +138,8 @@ export default {
       selectedPeriod: '1 Month',
       amountLoan: '',
       aboutLoan: '',
+      payLoan: false,
+      payLoanData: {}
     }
   },
   computed: {
@@ -165,39 +197,77 @@ export default {
         return true;
       }
     },
+    makeId() {
+      var text = "";
+      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+      for (var i = 0; i < 15; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+      return text;
+    },
     resetForm() {
       this.selectedPeriod = '1 Month'
       this.amountLoan = ''
       this.aboutLoan = ''
+      this.payLoan = false
     },
     proceed() {
-      if (this.amountLoan == '') {
-        return false
+      if (this.payLoan) {
+        let getLoanList = this.$store.getters.getLoanList
+        getLoanList.forEach((item) => {
+          if (item.id == this.payLoanData.id && item.dueDate == this.payLoanData.dueDate) {
+            item.status = 'paid'
+            item.type = 'pay'
+            this.$store.commit("addTransactionList", item);
+          }
+        });
+        this.$vToastify.success("Loan has been Paid!");
+        this.calculateFundsPaid()
+        this.$store.commit("setLoanList", getLoanList);
+      } else {
+        if (this.amountLoan == '') {
+          return false
+        }
+        let currentDate = this.$moment().format()
+        let data = {
+          title: this.aboutLoan == '' ? this.makeId() : this.aboutLoan,
+          dateLoan: currentDate,
+          dueDate: this.$moment(currentDate).add(this.period, 'M'),
+          type: 'loan',
+          period: this.period,
+          totalLoan: Number(this.totalLoan),
+          fee: Number(window.Decimal.add(Number(this.service), Number(this.totalInterest))),
+          total: Number(this.monthlyPayment)
+        }
+        this.$vToastify.success("Loan Successful!");
+
+        this.$store.commit("addTransactionList", data);
+
+        this.calculateFunds()
+
+        this.addLoan(data, this.period)
+
       }
-      let currentDate = this.$moment().format()
-      let data = {
-        title: this.aboutLoan,
-        dateLoan: currentDate,
-        dueDate: this.$moment(currentDate).add(this.period, 'M'),
-        type: 'loan',
-        period: this.period,
-        totalLoan: Number(this.totalLoan),
-        fee: Number(window.Decimal.add(Number(this.service), Number(this.totalInterest))),
-        total: Number(this.monthlyPayment)
-      }
-      this.$vToastify.success("Loan Successful!");
-
-      this.$store.commit("addTransactionList", data);
-
-      this.calculateFunds()
-
-      this.addLoan(data, this.period)
-
       this.resetForm()
     },
     calculateFunds() {
       let borrowed = window.Decimal.add(Number(this.borrowedFunds), Number(this.totalLoan))
       let funds = window.Decimal.sub(Number(this.funds), Number(this.totalLoan))
+
+      this.$store.commit("setBorrowedFunds", borrowed);
+      this.$store.commit("setFunds", funds);
+    },
+    calculateFundsPaid() {
+      let divFee = window.Decimal.div(Number(this.payLoanData.fee), Number(this.payLoanData.period))
+      let loanTotal = window.Decimal.sub(Number(this.payLoanData.total), Number(divFee))
+      let borrowed = window.Decimal.sub(Number(this.borrowedFunds), Number(this.payLoanData.total))
+      let funds = window.Decimal.add(Number(this.funds), Number(this.payLoanData.total))
+
+      console.log(Number(divFee))
+      console.log(Number(loanTotal))
+      console.log(Number(borrowed))
+      console.log(Number(funds))
 
       this.$store.commit("setBorrowedFunds", borrowed);
       this.$store.commit("setFunds", funds);
@@ -221,6 +291,15 @@ export default {
         }
         this.$store.commit("addLoanList", dataLoan);
       });
+    },
+    getLoanItem(dt) {
+      console.log(dt)
+      this.payLoanData = dt
+      this.payLoan = true
+    },
+    cancelPayLoan() {
+      this.payLoan = false
+      this.resetForm()
     }
   },
 }
