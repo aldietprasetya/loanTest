@@ -11,8 +11,7 @@
       <div class="c-home__transaction-table_list hover:bg-primary-grey3 cursor-pointer" v-for="(item, i) in loanList" :key="i">
 
         <div class="c-home__transaction-table_icon">
-          <span class="material-icons" v-if="item.type == 'pay'">add</span>
-          <span class="material-icons" v-else>remove</span>
+          <span class="material-icons">credit_score</span>
         </div>
         <div class="c-home__transaction-table_detil">
           <span class="font-semibold">{{item.title == '' ? '-' : item.title}}</span>
